@@ -44,19 +44,22 @@ const ContactList = async (req: Request, res: Response, next: NextFunction) => {
   res.json(list);
 };
 
-const ContactUpdate = async (req: Request, res: Response, next: NextFunction) => {
+const ContactEdit = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
   if (!id) return next(new Error("Id is required"));
 
   const { name, surname, email, inquiryType, companyName, message } = req.body;
 
-  const data = await Contact.findOne({
-    where: { id: +id },
-  });
-  if (!data) return next(new Error("Contact not found"));
-  const updatedData = await Contact.update(2, {
+  const contact = await Contact.findOne({ where: { id: +id } });
+  if (!contact) return next(new Error("Contact not found"));
+
+  const updatedData = await Contact.update(id, {
     name,
     surname,
+    email,
+    inquiryType,
+    companyName,
+    message,
   });
   res.json({
     message: "Contact updated successfully",
@@ -64,8 +67,31 @@ const ContactUpdate = async (req: Request, res: Response, next: NextFunction) =>
   });
 };
 
+const ContactDel = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.id;
+    if (!id) return next(new Error("Id is required"));
+
+    const contact = await Contact.findOne({ where: { id: +id } });
+
+    if (!contact) {
+      res.status(404).json({ message: "Contact not found." });
+    } else {
+      await Contact.softRemove(contact);
+
+      res.status(200).json({ message: "Contact deleted successfully." });
+    }
+  } catch (error) {
+    console.error("Error deleting contact:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while deleting the contact." });
+  }
+};
+
 export const ContactController = () => ({
   Create,
   ContactList,
-  ContactUpdate,
+  ContactEdit,
+  ContactDel,
 });

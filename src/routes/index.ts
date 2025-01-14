@@ -4,5 +4,5 @@ import { contactRoutes } from "../Core/Contact/contact.route";
 
 export const v1Routes = Router();
 
-v1Routes.use('/user', userRoutes);
-v1Routes.use('/contact', contactRoutes)
+v1Routes.use("/user", userRoutes);
+v1Routes.use("/contact", contactRoutes);
