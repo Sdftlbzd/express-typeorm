@@ -6,26 +6,30 @@ const Register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, surname, age, email } = req.body;
 
-    const user = User.create({
-      name,
-      surname,
-      age,
-      email,
-    });
-
-    const errors = await validate(user);
-
-    if (errors.length > 0) {
-      res.status(400).json({
-        message: "Validation failed",
-        errors: errors.map((error) => ({
-          property: error.property,
-          constraints: error.constraints,
-        })),
+    const user = await User.findOne({ where: { email: email } });
+    if (user) res.json("Bu emaile uygun user artiq movcuddur");
+    else {
+      const newUser = User.create({
+        name,
+        surname,
+        age,
+        email,
       });
-    } else {
-      const savedUser = await user.save();
-      res.status(201).json(savedUser);
+
+      const errors = await validate(newUser);
+
+      if (errors.length > 0) {
+        res.status(400).json({
+          message: "Validation failed",
+          errors: errors.map((error) => ({
+            property: error.property,
+            constraints: error.constraints,
+          })),
+        });
+      } else {
+        const savedUser = await newUser.save();
+        res.status(201).json(savedUser);
+      }
     }
   } catch (error) {
     console.error(error);
