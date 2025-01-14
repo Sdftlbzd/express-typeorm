@@ -74,13 +74,11 @@ const ContactDel = async (req: Request, res: Response, next: NextFunction) => {
 
     const contact = await Contact.findOne({ where: { id: +id } });
 
-    if (!contact) {
-      res.status(404).json({ message: "Contact not found." });
-    } else {
-      await Contact.softRemove(contact);
+    if (!contact) return next(res.status(404).json("Contact not found."));
 
-      res.status(200).json({ message: "Contact deleted successfully." });
-    }
+    await Contact.softRemove(contact);
+
+    res.status(200).json({ message: "Contact deleted successfully." });
   } catch (error) {
     console.error("Error deleting contact:", error);
     res
