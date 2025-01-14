@@ -1,3 +1,4 @@
+import { IsEmail, Length } from "class-validator";
 import {
   BaseEntity,
   Column,
@@ -20,13 +21,15 @@ export class Contact extends BaseEntity {
   id: number;
 
   @Column({ type: "varchar", length: 150 })
- 
+  @Length(3, 150, { message: "Name must be between 3 and 50 characters." })
   name: string;
 
   @Column({ type: "varchar", length: 150 })
+  @Length(3, 150, { message: "Name must be between 3 and 50 characters." })
   surname: string;
 
   @Column({ type: "varchar", length: 150 })
+  @IsEmail({}, { message: "Email must be a valid email address." })
   email: string;
 
   @Column({ type: "varchar", length: 150 })
