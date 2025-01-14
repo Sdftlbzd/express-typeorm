@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import { Contact } from "../models/contact.model";
+import { User } from "../models/user.model";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -8,7 +9,7 @@ export const AppDataSource = new DataSource({
   username: "root",
   password: "",
   database: "express_typeorm",
-  entities: [Contact],
+  entities: [Contact, User],
   subscribers: [],
   migrations: [],
   logging: false,
