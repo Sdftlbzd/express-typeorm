@@ -2,6 +2,7 @@ import express from "express";
 import { v1Routes } from "./routes";
 import "reflect-metadata";
 import { AppDataSource } from "./DAL/config/data-source";
+import { handleErrors } from "./DAL/middleware";
 
 AppDataSource.initialize()
   .then(() => {
@@ -12,10 +13,10 @@ AppDataSource.initialize()
     app.use(express.json());
 
     app.use("/api/v1", v1Routes);
-    app.use((err: any, req: any, res: any, next: any) => {
-      console.error(err.stack);
-      res.status(500).send("Something broke!");
-    });
+
+
+
+    app.use(handleErrors);
 
     app.listen(8080, () => {
       console.log("Server is running on port 8080");
